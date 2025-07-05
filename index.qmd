@@ -1,6 +1,10 @@
 ---
 title: "Workshop Exercise: Emissions Data - Table, Map, and Chart"
 format: html
+editor: visual
+theme: cosmo
+number-sections: true
+tabset: true
 author: Muhammad Farooq Ahmad
 ---
 
