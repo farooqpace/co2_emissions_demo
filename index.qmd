@@ -1,12 +1,23 @@
 ---
 title: "Workshop Exercise: Emissions Data - Table, Map, and Chart"
-format: html
+format:
+  html:
+    theme: cosmo
+    echo: false
+    code-fold: false
+    tabset: true
 editor: visual
-theme: cosmo
-number-sections: true
-tabset: true
 author: Muhammad Farooq Ahmad
 ---
+
+```{python}
+#| echo: false
+#| include: false
+#| warning: false
+#| message: false
+```
+
+::: {.hidden}
 
 # Introduction
 
@@ -36,6 +47,8 @@ Be sure to view that page to get an idea of the final product.
 
 Run the following code to import the necessary libraries:
 
+:::
+
 ```{python}
 import pandas as pd
 import numpy as np
@@ -44,12 +57,18 @@ from itables import show
 import country_converter as coco
 ```
 
+::: {.hidden}
+
 Load in your dataset from gapminder below. View it in your data viewer to get an idea of the structure.
+
+:::
 
 ```{python}
 # Load the data
 emissions = pd.read_csv("data/co2_cons.csv")
 ```
+
+::: {.hidden}
 
 # Initial Cleaning
 
@@ -57,13 +76,19 @@ In this dataset, some values are given in thousands, with a "k" used to represen
 
 First, let's see the issue:
 
+:::
+
 ```{python}
-emissions.query("country == 'China'")[["country",  "2020", "2021", "2022"]]
+#emissions.query("country == 'China'")[["country",  "2020", "2021", "2022"]]
 ```
+
+::: {.hidden}
 
 Notice the letter "k" at the end of "10.6k" as an example.
 
 We can remove the "k" and multiply those values by 1000 with the following code:
+
+:::
 
 ```{python}
 for col in ["2021", "2022"]:
@@ -72,11 +97,17 @@ for col in ["2021", "2022"]:
     emissions[col] = np.where(has_k, values.astype(float) * 1000, values.astype(float))
 ```
 
+::: {.hidden}
+
 And check that it worked:
 
+:::
+
 ```{python}
-emissions.query("country == 'China'")[["country",  "2020", "2021", "2022"]]
+#emissions.query("country == 'China'")[["country",  "2020", "2021", "2022"]]
 ```
+
+::: {.hidden}
 
 # Table Section
 
@@ -85,6 +116,8 @@ Our goal is to create a table showing emissions for a few selected years and cal
 1. Subset the data to include `Country`, `2000`, and `2022` columns only.
 2. Calculate an "Absolute Change" column as the difference between 2022 and 2000.
 3. Calculate a "Relative Change" column as the absolute change divided by the 2000 emissions, then multiplied by 100.
+
+:::
 
 ```{python}
 # Subset the data to include `country`, `2000`, and `2022` columns only.
@@ -100,11 +133,17 @@ table_df["Relative Change"] = ((table_df["Absolute Change"] / table_df["2000"]) 
 table_df["Relative Change"] = table_df["Relative Change"].round(0).astype(str) + "%"
 ```
 
+::: {.hidden}
+
 Now we can display this as an interactive table with itables:
 
+:::
+
 ```{python}
-show(table_df)
+#show(table_df)
 ```
+
+::: {.hidden}
 
 # Chart Section
 
@@ -114,6 +153,8 @@ Our goal is to create a line chart from 1990 to 2022 for a few selected countrie
 2. Filter from 1990 to 2022 only.
 3. Choose 5 countries of your choice.
 4. Create a line chart showing emissions over time for the selected countries with Plotly Express.
+
+:::
 
 ```{python}
 # Melt the original `emissions` dataset. Your id_vars should be "country", your var_name should be "year" and your value_name should be "emissions".
@@ -147,6 +188,7 @@ fig_chart = px.line(
 
 ```
 
+::: {.hidden}
 
 # Mapping Section
 
@@ -159,7 +201,14 @@ This will be animated by year.
 1. Ensure each country has a 3-letter ISO code. We'll use `country_converter` for that.
 2. Create a map with `px.choropleth` and use `animation_frame` to show changes over time.
 
+:::
+
 ```{python}
+# Exclude United Arab Emirates from the dataset
+emissions_long_1990_2022 = emissions_long_1990_2022[
+    emissions_long_1990_2022["country"] != "UAE"
+]
+
 # Convert country names to ISO3 codes
 emissions_long_1990_2022["country_code"] = coco.convert(
     emissions_long_1990_2022["country"], to="ISO3"
@@ -171,16 +220,20 @@ fig_map = px.choropleth(
     color="emissions",
     hover_name="country",
     animation_frame="year",
-    title="Global CO2 Emissions (1990-2022)",
+    title="Global CO2 Emissions (1990-2022)"
 )
 
-fig_map.show()
+#fig_map.show()
 ```
 
+::: {.hidden}
 
 # Final Tabset
-
 Below, we place our results into a tabbed interface.
+
+:::
+
+# Final Tabset
 
 ::: {.panel-tabset}
 
@@ -204,6 +257,10 @@ fig_map.show()
 
 :::
 
+::: {.hidden}
+
 # Deploying to GitHub Pages
 
 As a final step, you should follow the steps outlined in the prework to deplioy your report to GitHub Pages. You will be asked to share a link to your report in the course portal
+
+:::
